@@ -1,0 +1,71 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Adaugă un vehicul",
+        "description": "Nu este nevoie de cont pe portal.etoll.ro — numărul de înmatriculare, seria de șasiu și seria certificatului de înmatriculare sunt verificate anonim, la fel ca pe pagina publică.",
+        "data": {
+          "plate_number": "Număr de înmatriculare",
+          "vin": "Serie de șasiu (VIN)",
+          "certificate_series": "Seria certificatului de înmatriculare"
+        },
+        "data_description": {
+          "plate_number": "Numărul de înmatriculare, de exemplu B123ABC.",
+          "vin": "Seria de șasiu, exact cum apare în certificatul de înmatriculare.",
+          "certificate_series": "Seria certificatului de înmatriculare (talon), de exemplu AB123456."
+        }
+      },
+      "reauth_confirm": {
+        "title": "Reintrodu seria certificatului",
+        "description": "Datele salvate pentru {plate} nu mai corespund în registrul vehiculelor. Reintrodu seria certificatului de înmatriculare pentru a relua verificările.",
+        "data": {
+          "certificate_series": "Seria certificatului de înmatriculare"
+        },
+        "data_description": {
+          "certificate_series": "Seria certificatului de înmatriculare (talon), de exemplu AB123456."
+        }
+      },
+      "reconfigure": {
+        "title": "Editează datele vehiculului",
+        "description": "Actualizează datele căutate pe portal.etoll.ro pentru acest vehicul.",
+        "data": {
+          "plate_number": "Număr de înmatriculare",
+          "vin": "Serie de șasiu (VIN)",
+          "certificate_series": "Seria certificatului de înmatriculare"
+        },
+        "data_description": {
+          "plate_number": "Numărul de înmatriculare, de exemplu B123ABC.",
+          "vin": "Seria de șasiu, exact cum apare în certificatul de înmatriculare.",
+          "certificate_series": "Seria certificatului de înmatriculare (talon), de exemplu AB123456."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Nu s-a putut contacta portal.etoll.ro.",
+      "vehicle_mismatch": "Numărul de înmatriculare, seria de șasiu și seria certificatului nu corespund unui vehicul din registru. Verifică-le pe toate trei și încearcă din nou.",
+      "lookup_failed": "portal.etoll.ro a respins interogarea. Încearcă din nou."
+    },
+    "abort": {
+      "already_configured": "Acest număr de înmatriculare este deja configurat.",
+      "reauth_successful": "Seria certificatului a fost actualizată.",
+      "reconfigure_successful": "Datele vehiculului au fost actualizate.",
+      "wrong_vehicle": "Numărul de înmatriculare nu corespunde vehiculului reconfigurat."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "days_remaining": {
+        "name": "Zile rămase",
+        "state_attributes": {
+          "plate_number": { "name": "Număr de înmatriculare" },
+          "valid_from": { "name": "Valabilă de la" },
+          "valid_until": { "name": "Valabilă până la" },
+          "vignette_series": { "name": "Seria rovinietei" },
+          "vehicle_category": { "name": "Categorie vehicul" },
+          "emission_standard": { "name": "Normă de poluare" },
+          "price": { "name": "Preț" }
+        }
+      }
+    }
+  }
+}

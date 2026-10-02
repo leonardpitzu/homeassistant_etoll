@@ -1,0 +1,153 @@
+blueprint:
+  name: Rovinietă expiry reminder
+  description: >
+    Reminds you to renew a vehicle's Romanian road tax, and keeps reminding
+    until you do.
+
+
+    Reminders land between 09:00 and 20:00 — every three hours while the expiry
+    is merely close, every hour once it is urgent. Nothing has to be
+    acknowledged or reset: paying sends the countdown back up, the condition
+    goes false, and the reminders stop on their own.
+
+
+    Both thresholds are *below* values, so the defaults start reminding 14 days
+    out and escalate 4 days out.
+
+
+    It also reports its own blind spot: if the sensor stops answering for 48
+    hours, it says so, because a reminder that goes quiet through failure is
+    worse than no reminder at all.
+  domain: automation
+  author: Leonard Pitzu
+  source_url: https://github.com/leonardpitzu/homeassistant_etoll/blob/main/blueprints/automation/rovinieta.yaml
+  homeassistant:
+    min_version: "2024.10.0"
+  input:
+    vehicle:
+      name: Vehicle
+      icon: mdi:car
+      input:
+        vignette_sensor:
+          name: Vignette sensor
+          description: The eToll rovinietă "days remaining" sensor for this vehicle.
+          selector:
+            entity:
+              integration: etoll
+              domain: sensor
+        vehicle_name:
+          name: Vehicle name
+          description: What to call the car in the reminder — it goes straight into the message.
+          selector:
+            text:
+    notification:
+      name: Notification
+      icon: mdi:bell-ring
+      input:
+        notify_targets:
+          name: Notify targets
+          description: Where the reminders go.
+          selector:
+            target:
+              entity:
+                domain: notify
+    thresholds:
+      name: Thresholds
+      icon: mdi:calendar-alert
+      collapsed: true
+      input:
+        remind_below_days:
+          name: Remind below
+          description: Start reminding when fewer days than this are left.
+          default: 15
+          selector:
+            number:
+              min: 1
+              max: 60
+              step: 1
+              unit_of_measurement: days
+              mode: box
+        escalate_below_days:
+          name: Escalate below
+          description: Below this, remind every hour instead of every three.
+          default: 5
+          selector:
+            number:
+              min: 1
+              max: 30
+              step: 1
+              unit_of_measurement: days
+              mode: box
+
+mode: single
+
+variables:
+  vignette_sensor: !input vignette_sensor
+  vehicle_name: !input vehicle_name
+
+triggers:
+  - trigger: time
+    id: routine
+    at:
+      - "09:00:00"
+      - "12:00:00"
+      - "15:00:00"
+      - "18:00:00"
+  - trigger: time
+    id: escalated
+    at:
+      - "10:00:00"
+      - "11:00:00"
+      - "13:00:00"
+      - "14:00:00"
+      - "16:00:00"
+      - "17:00:00"
+      - "19:00:00"
+      - "20:00:00"
+  - trigger: state
+    id: stale
+    entity_id: !input vignette_sensor
+    to:
+      - unavailable
+      - unknown
+    for:
+      hours: 48
+
+actions:
+  - choose:
+      - alias: The rovinietă has not been checkable for two days
+        conditions:
+          - condition: trigger
+            id: stale
+        sequence:
+          - action: notify.send_message
+            target: !input notify_targets
+            data:
+              title: Rovinietă unchecked
+              message: >-
+                {{ vehicle_name }}: the rovinietă has not been verifiable for 48
+                hours. portal.etoll.ro may be down, or the integration may need
+                attention.
+      - alias: Expiry is close, and this slot is one that reminds
+        conditions:
+          - condition: numeric_state
+            entity_id: !input vignette_sensor
+            below: !input remind_below_days
+          - condition: or
+            conditions:
+              - condition: trigger
+                id: routine
+              - condition: numeric_state
+                entity_id: !input vignette_sensor
+                below: !input escalate_below_days
+        sequence:
+          - action: notify.send_message
+            target: !input notify_targets
+            data:
+              title: Rovinietă
+              message: >-
+                {% set days = states(vignette_sensor) | int(0) %} {% if days ==
+                0 %}{{ vehicle_name }}: no valid rovinietă. Pay it now.{% else
+                %}{{ vehicle_name }}: rovinietă expires in {{ days }} day{{ 's'
+                if days != 1 }}, on {{ state_attr(vignette_sensor, 'valid_until')
+                }}.{% endif %}

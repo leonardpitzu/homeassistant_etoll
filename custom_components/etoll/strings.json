@@ -1,0 +1,71 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Add a vehicle",
+        "description": "No portal.etoll.ro account is needed — the plate number, VIN and registration-certificate series are looked up anonymously, the same way the public page does it.",
+        "data": {
+          "plate_number": "Plate number",
+          "vin": "VIN",
+          "certificate_series": "Registration certificate series"
+        },
+        "data_description": {
+          "plate_number": "Registration plate, e.g. B123ABC.",
+          "vin": "Chassis number, exactly as printed on the registration certificate.",
+          "certificate_series": "The series of the registration certificate (talon), e.g. AB123456."
+        }
+      },
+      "reauth_confirm": {
+        "title": "Re-enter the certificate series",
+        "description": "The stored details for {plate} no longer match the vehicle registry. Re-enter the registration-certificate series to resume checks.",
+        "data": {
+          "certificate_series": "Registration certificate series"
+        },
+        "data_description": {
+          "certificate_series": "The series of the registration certificate (talon), e.g. AB123456."
+        }
+      },
+      "reconfigure": {
+        "title": "Edit vehicle details",
+        "description": "Update the details looked up on portal.etoll.ro for this vehicle.",
+        "data": {
+          "plate_number": "Plate number",
+          "vin": "VIN",
+          "certificate_series": "Registration certificate series"
+        },
+        "data_description": {
+          "plate_number": "Registration plate, e.g. B123ABC.",
+          "vin": "Chassis number, exactly as printed on the registration certificate.",
+          "certificate_series": "The series of the registration certificate (talon), e.g. AB123456."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "portal.etoll.ro could not be reached.",
+      "vehicle_mismatch": "The plate number, VIN and certificate series do not match a vehicle in the registry. Check all three and try again.",
+      "lookup_failed": "portal.etoll.ro refused the lookup. Please try again."
+    },
+    "abort": {
+      "already_configured": "This plate number is already set up.",
+      "reauth_successful": "The certificate series was updated.",
+      "reconfigure_successful": "The vehicle details were updated.",
+      "wrong_vehicle": "The plate number does not match the vehicle being reconfigured."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "days_remaining": {
+        "name": "Days remaining",
+        "state_attributes": {
+          "plate_number": { "name": "Plate number" },
+          "valid_from": { "name": "Valid from" },
+          "valid_until": { "name": "Valid until" },
+          "vignette_series": { "name": "Vignette series" },
+          "vehicle_category": { "name": "Vehicle category" },
+          "emission_standard": { "name": "Emission standard" },
+          "price": { "name": "Price" }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "entity": {
+    "sensor": {
+      "days_remaining": {
+        "default": "mdi:highway"
+      }
+    }
+  }
+}

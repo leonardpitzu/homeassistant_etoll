@@ -1,0 +1,14 @@
+{
+  "domain": "etoll",
+  "name": "eToll Rovinietă",
+  "codeowners": [
+    "@leonardpitzu"
+  ],
+  "config_flow": true,
+  "documentation": "https://github.com/leonardpitzu/homeassistant_etoll",
+  "integration_type": "service",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/leonardpitzu/homeassistant_etoll/issues",
+  "requirements": [],
+  "version": "2.0.1"
+}
