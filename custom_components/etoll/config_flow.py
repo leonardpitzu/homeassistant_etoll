@@ -5,7 +5,7 @@ from __future__ import annotations
 import logging
 from typing import Any
 
-import voluptuous as vol
+import probatio as vol
 from homeassistant.config_entries import ConfigFlow, ConfigFlowResult
 from homeassistant.helpers.aiohttp_client import async_create_clientsession
 
@@ -48,7 +48,10 @@ class EtollConfigFlow(ConfigFlow, domain=DOMAIN):
         self, plate: str, vin: str, series: str, errors: dict[str, str]
     ) -> bool:
         """Run the lookup once, mapping any failure onto ``errors``."""
-        api = EtollApi(self.hass, async_create_clientsession(self.hass))
+        # Own cookie jar per lookup; released here, since a flow is not a config
+        # entry setup and would otherwise keep it until Home Assistant stops.
+        session = async_create_clientsession(self.hass)
+        api = EtollApi(self.hass, session)
         try:
             await api.async_get_vignettes(plate, vin, series)
         except EtollConnectionError as err:
@@ -60,6 +63,8 @@ class EtollConfigFlow(ConfigFlow, domain=DOMAIN):
         except EtollApiError as err:
             _LOGGER.debug("Lookup refused: %s", err)
             errors["base"] = "lookup_failed"
+        finally:
+            session.detach()
         return bool(errors)
 
     async def async_step_user(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:

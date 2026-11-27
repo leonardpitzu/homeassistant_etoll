@@ -1,2 +1,4 @@
-pytest-homeassistant-custom-component==0.13.366
-ruff==0.16.8
+pytest-cov
+# Home Assistant core's own test plugin, versioned like Home Assistant: 2026.12.0 once released, its beta until then
+pytest-homeassistant>=2026.12.0b2,<=2026.12.0
+ruff==0.17.6

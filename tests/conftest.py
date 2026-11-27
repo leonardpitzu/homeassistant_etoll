@@ -7,7 +7,7 @@ from unittest.mock import patch
 
 import pytest
 from homeassistant.core import HomeAssistant
-from pytest_homeassistant_custom_component.common import MockConfigEntry
+from pytest_homeassistant.common import MockConfigEntry
 
 from custom_components.etoll.const import (
     CONF_CERTIFICATE_SERIES,
@@ -19,8 +19,6 @@ from custom_components.etoll.const import (
 PLATE = "B123ABC"
 VIN = "WVWZZZ1JZXW000001"
 SERIES = "B00000000X"
-
-pytest_plugins = "pytest_homeassistant_custom_component"
 
 # A fixed "now" for the coordinator tests, with windows bracketing it.
 NOW = "2026-06-01T12:00:00Z"

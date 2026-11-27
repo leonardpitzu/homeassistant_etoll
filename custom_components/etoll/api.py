@@ -45,6 +45,10 @@ _HEADERS = {
     "Accept": "application/json, text/plain, */*",
 }
 
+# One captcha image or one search round trip; a poll makes up to
+# MAX_CAPTCHA_ATTEMPTS of each, so a hung portal must not stall it for long.
+_REQUEST_TIMEOUT = aiohttp.ClientTimeout(total=30)
+
 # HTTP 500 messages (lang=en) that mean the registry is briefly down — retry later.
 _TRANSIENT_MARKERS = (
     "unavailable",
@@ -115,21 +119,21 @@ class EtollApi:
         """Fetch a captcha image, which also (re)arms the session cookies."""
         url = self._rest_url(REST_CAPTCHA, "GET")
         try:
-            async with self._session.get(url, headers=_HEADERS) as response:
+            async with self._session.get(url, headers=_HEADERS, timeout=_REQUEST_TIMEOUT) as response:
                 response.raise_for_status()
                 return await response.read()
-        except aiohttp.ClientError as err:
-            raise EtollConnectionError(f"Could not fetch captcha: {err}") from err
+        except (aiohttp.ClientError, TimeoutError) as err:
+            raise EtollConnectionError(f"Could not fetch captcha: {err!r}") from err
 
     async def _async_search(self, body: dict[str, Any]) -> list[dict[str, Any]]:
         """POST the search and turn the portal's answer into a record list."""
         url = self._rest_url(REST_SEARCH, "POST", page="0", size=str(PAGE_SIZE))
         try:
-            async with self._session.post(url, json=body, headers=_HEADERS) as response:
+            async with self._session.post(url, json=body, headers=_HEADERS, timeout=_REQUEST_TIMEOUT) as response:
                 status = response.status
                 text = await response.text()
-        except aiohttp.ClientError as err:
-            raise EtollConnectionError(f"Search request failed: {err}") from err
+        except (aiohttp.ClientError, TimeoutError) as err:
+            raise EtollConnectionError(f"Search request failed: {err!r}") from err
 
         payload: dict[str, Any] = {}
         if text:

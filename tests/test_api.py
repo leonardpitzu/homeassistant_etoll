@@ -108,3 +108,13 @@ async def test_an_unreachable_portal_raises_a_connection_error(api, aioclient_mo
 
     with pytest.raises(EtollConnectionError):
         await api.async_get_vignettes(PLATE, VIN, SERIES)
+
+
+@pytest.mark.parametrize("method", ["get", "post"])
+async def test_a_hung_portal_times_out_as_a_connection_error(api, aioclient_mock, method):
+    """aiohttp raises TimeoutError, not ClientError, when the request timeout fires."""
+    aioclient_mock.get(PORTAL, content=b"image", exc=TimeoutError() if method == "get" else None)
+    aioclient_mock.post(PORTAL, exc=TimeoutError())
+
+    with pytest.raises(EtollConnectionError):
+        await api.async_get_vignettes(PLATE, VIN, SERIES)
