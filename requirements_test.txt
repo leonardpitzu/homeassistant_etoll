@@ -1,6 +1,6 @@
-# captcha_ocr.py needs it; the old test plugin pulled it in, pytest-homeassistant does not
+# Declared in manifest.json; captcha_ocr.py imports it at module level
 numpy
 pytest-cov
-# Home Assistant core's own test plugin, versioned like Home Assistant: 2026.12.0 once released, its beta until then
-pytest-homeassistant>=2026.12.0b2,<=2026.12.0
+# Home Assistant core's own test plugin, versioned like Home Assistant; matches hacs.json's minimum
+pytest-homeassistant==2026.12.0
 ruff==0.17.6

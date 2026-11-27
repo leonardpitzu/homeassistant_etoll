@@ -2,10 +2,11 @@ name: CI
 
 on:
   push:
-    branches: [main, master]
+    branches: [main]
     paths-ignore: ["**.md", ".gitignore", "LICENSE"]
   pull_request:
     paths-ignore: ["**.md", ".gitignore", "LICENSE"]
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -41,9 +42,10 @@ jobs:
           cache: pip
           cache-dependency-path: requirements_test.txt
       - name: Install test dependencies
+        # pytest-homeassistant pins the matching Home Assistant release.
         run: pip install -r requirements_test.txt
       - name: Run tests
-        run: pytest tests/ -v --cov=custom_components/etoll --cov-report=term-missing
+        run: pytest tests/ -q --cov=custom_components/etoll --cov-report=term-missing
 
   hacs:
     name: HACS Validation

@@ -2,8 +2,10 @@
 
 The portal's captcha is five case-sensitive characters (``A-Z a-z 2-9`` — the
 ambiguous ``0 1 O I l o s`` etc. are not used) drawn in a distorted, hand-drawn
-font. It is read on the Home Assistant host with no extra dependencies: Pillow
-and numpy both ship with Home Assistant. A small gallery of labelled glyphs
+font. It is read on the Home Assistant host: Pillow is a Home Assistant core
+dependency and numpy is declared in the manifest (Home Assistant's constraints
+pin its version, and the OS and Container images already carry it). A small
+gallery of labelled glyphs
 lives beside this module (``captcha_templates.npz``); each captcha is split into
 its five glyphs and each glyph is classified against the gallery by nearest
 neighbour. No OCR service, no API key, nothing leaves the machine.
